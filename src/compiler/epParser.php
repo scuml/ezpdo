@@ -622,13 +622,13 @@ class epClassParser extends epConfigurableWithLog {
             throw new epExceptionParser('Cannot parse @orm tag for var [' . $class_var . ']');
             return false;
         }
-
+        
         $error = $t->parse($value);
         if (is_string($error)) {
             throw new epExceptionParser('Error in parsing @orm tag for var [' . $class_var . ']: ' . $error);
             return false;
         }
-
+        
         // call field map factory to create a field map
         if (!($fm = epFieldMapFactory::make($var, $t->get('type'), $t->get('params')))) {
             return false;
@@ -640,6 +640,11 @@ class epClassParser extends epConfigurableWithLog {
         // set column name if set
         if ($column_name = $t->get('name')) {
             $fm->setColumnName($column_name);
+        }
+        
+        // set can_be_null if set 
+        if ($can_be_null = $t->get('can_be_null')) {
+            $fm->setCanBeNull($can_be_null);
         }
         
         // get key type

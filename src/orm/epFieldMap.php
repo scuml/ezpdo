@@ -89,7 +89,14 @@ class epFieldMap extends epBase {
      * @access protected
      */
     protected $default_value;
-         
+
+    /**
+     * Can this column be null
+     * @var bool
+     * @access protected
+     */
+    protected $can_be_null;
+
     /**
      * Custom class tags
      * @var array
@@ -217,7 +224,24 @@ class epFieldMap extends epBase {
     public function setDefaultValue($default_value) {
         $this->default_value = $default_value;
     }
-
+    /**
+     * Gets value of can_be_null 
+     * @return bool
+     * @access public
+     */
+    public function getCanBeNull() {
+        return $this->can_be_null;
+    }
+     
+    /**
+     * Sets value to can_be_null 
+     * @param bool
+     * @return void
+     * @access public
+     */
+    public function setCanBeNull($can_be_null) {
+        $this->can_be_null = $can_be_null;
+    }
     /**
      * Get class tags
      * @return array (keyed by tag name)

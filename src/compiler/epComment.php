@@ -291,7 +291,7 @@ class epClassTag extends epTag {
 /**
  * Class to parse an orm tag value of a variable
  * 
- * Three attributes for an orm tag for a variable
+ * Attributes for an orm tag for a variable
  * <ol>
  * <li>
  * name: the name of column the variable to be mapped to which can
@@ -303,6 +303,9 @@ class epClassTag extends epTag {
  * can be empty as well. If empty, the parser ({@link epClassParser}) 
  * tries to figure out the type by looking at other usual docblock tags.
  * The last resort is to treat it as a string. 
+ * </li>
+ * <li>
+ * null: can the item be set as null (default:false)
  * </li>
  * <li>
  * params: the params for the column type (can be empty) 
@@ -356,6 +359,7 @@ epDefine('EPL_T_MANY');
 epDefine('EPL_T_INDEX');
 epDefine('EPL_T_INVERSE');
 epDefine('EPL_T_UNIQUE');
+epDefine('EPL_T_NULL');
 /**#@-*/
 
 /**
@@ -380,6 +384,7 @@ class epTagLexer extends epLexer {
         'index'        => EPL_T_INDEX,
         'inverse'      => EPL_T_INVERSE,
         'unique'       => EPL_T_UNIQUE,
+        'null'         => EPL_T_NULL,
         );
 
     /**
@@ -555,14 +560,21 @@ class epTagParser extends epParser {
 
         // index or unique?
         $t = $this->peek();
-        if ($t == EPL_T_INDEX || $t == EPL_T_UNIQUE) {
+        
+		if ($t == EPL_T_NULL) {
+            //consume NULL
+            $this->next();
+            $this->map['can_be_null'] = true;
+		}
+		
+		if ($t == EPL_T_INDEX || $t == EPL_T_UNIQUE) {
             
             // consume index or unique
             $this->next();
             
             // get key type
             $this->map['keytype'] = $keytype = $this->t->value;
-
+						
             // get key name in ()
             if ($this->peek() == '(') {
                 $params = $this->params();
@@ -583,7 +595,7 @@ class epTagParser extends epParser {
     }
 
     /**
-     * Parse a relatinship definition
+     * Parse a relationship definition
      */
     protected function relationship() {
         

@@ -1496,7 +1496,12 @@ class epDbObject {
      * @return mixed
      */
     public function quote($v, $fm = null) {
-
+        
+        // Handle NULLs
+        if ( is_null( $v ) and $fm->getCanBeNull() ) {
+            return 'NULL';
+        }
+        
         // special treatment for blob
         if ($fm) {
 
